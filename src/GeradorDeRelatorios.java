@@ -105,7 +105,7 @@ public class GeradorDeRelatorios {
 
 		GeradorDeRelatorios gdr;
 
-		gdr = new GeradorDeRelatorios(produtos, new QuickSort(1), new Preco(), new FiltrarDescricao("nOKiA"));
+		gdr = new GeradorDeRelatorios(produtos, new QuickSort(1), new CriterioPreco(), new FiltrarDescricao("nOKiA"));
 		
 		try{
 			gdr.geraRelatorio("saida.html");

@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.color.*;
 
 public class ProdutoColorido implements Produto{
     private Produto decorado;
