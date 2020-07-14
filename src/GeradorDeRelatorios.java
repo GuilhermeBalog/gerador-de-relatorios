@@ -27,6 +27,10 @@ public class GeradorDeRelatorios {
 	private int filtro;
 	private Object argFiltro;
 
+	private Ordenacao algoritmo_novo;
+	private Comparador<Produto> criterio_novo;
+	private Filtragem filtro_novo;
+
 	public GeradorDeRelatorios(Produto [] produtos, int algoritmo, int criterio, int format_flags, int filtro, Object argFiltro){
 
 		this.produtos = new Produto[produtos.length];
@@ -41,6 +45,19 @@ public class GeradorDeRelatorios {
 		this.format_flags = format_flags;
 		this.filtro = filtro;
 		this.argFiltro = argFiltro;
+	}
+
+	public GeradorDeRelatorios(Produto [] produtos, Ordenacao algoritmo, Comparador<Produto> criterio, int format_flags, Filtragem filtro){
+		this.produtos = new Produto[produtos.length];
+		
+		for(int i = 0; i < produtos.length; i++){
+		
+			this.produtos[i] = produtos[i];
+		}
+
+		this.algoritmo_novo = algoritmo;
+		this.criterio_novo = criterio;
+		this.filtro_novo = filtro;
 	}
 
 	private int particiona(int ini, int fim){
@@ -163,18 +180,26 @@ public class GeradorDeRelatorios {
 	}
 	
 	public void geraRelatorio(String arquivoSaida) throws IOException {
+		Produto[] produtosFiltrados = filtro_novo.filtrar(produtos);
+		algoritmo_novo.ordenar(produtosFiltrados, criterio_novo);
 
-		ordena(0, produtos.length - 1);
+		// ordena(0, produtos.length - 1);
 
 		PrintWriter out = new PrintWriter(arquivoSaida);
 
 		out.println("<!DOCTYPE html><html>");
-		out.println("<head><title>Relatorio de produtos</title><style>body{font-family: sans-serif}</style></head>");
+		out.println("<head><title>Relatorio de produtos</title></head>");
 		out.println("<body>");
 		out.println("<h1>Relatorio de Produtos:</h1>");
 		out.println("<ul>");
 
-		int count = 0;
+		for(int i = 0; i < produtosFiltrados.length; i++){
+			out.print("<li>");
+			out.print(produtos[i].formataParaImpressao());
+			out.println("</li>");
+		}
+
+		/*int count = 0;
 
 		for(int i = 0; i < produtos.length; i++){
 
@@ -226,10 +251,10 @@ public class GeradorDeRelatorios {
 				out.println("</li>");
 				count++;
 			}
-		}
+		}*/
 
 		out.println("</ul>");
-		out.println("<p><em>" + count + "</em> produtos listados, de um total de <em>" + produtos.length + "</em>.</p>");
+		out.println("<p><em>" + produtosFiltrados.length + "</em> produtos listados, de um total de <em>" + produtos.length + "</em>.</p>");
 		out.println("</body>");
 		out.println("</html>");
 
@@ -240,10 +265,22 @@ public class GeradorDeRelatorios {
 
 		return new Produto [] { 
 
-			new ProdutoPadrao( 1, "O Hobbit", "Livros", 2, 34.90),
-			new ProdutoPadrao( 2, "Notebook Core i7", "Informatica", 5, 1999.90),
-			new ProdutoPadrao( 3, "Resident Evil 4", "Games", 7, 79.90),
-			new ProdutoPadrao( 4, "iPhone", "Telefonia", 8, 4999.90),
+			new ProdutoNegrito(
+				new ProdutoPadrao( 1, "O Hobbit", "Livros", 2, 34.90)
+			),
+			new ProdutoItalico(
+				new ProdutoPadrao( 2, "Notebook Core i7", "Informatica", 5, 1999.90)
+			),
+			new ProdutoItalico(
+				new ProdutoNegrito(
+					new ProdutoPadrao( 3, "Resident Evil 4", "Games", 7, 79.90)
+				)
+			),
+			new ProdutoNegrito(
+				new ProdutoItalico(
+					new ProdutoPadrao( 4, "iPhone", "Telefonia", 8, 4999.90)
+				)
+			),
 			new ProdutoPadrao( 5, "Calculo I", "Livros", 20, 55.00),
 			new ProdutoPadrao( 6, "Power Glove", "Games", 3, 499.90),
 			new ProdutoPadrao( 7, "Microsoft HoloLens", "Informatica", 1, 19900.00),
@@ -281,10 +318,12 @@ public class GeradorDeRelatorios {
 
 		GeradorDeRelatorios gdr;
 
-		gdr = new GeradorDeRelatorios(	produtos, ALG_INSERTIONSORT, CRIT_PRECO_CRESC, 
+		/*gdr = new GeradorDeRelatorios(	produtos, ALG_INSERTIONSORT, CRIT_PRECO_CRESC, 
 						FORMATO_PADRAO | FORMATO_NEGRITO |  FORMATO_ITALICO, 
 						//FILTRO_ESTOQUE_MENOR_OU_IQUAL_A, 100);
-						FILTRO_CATEGORIA_IGUAL_A, "Livros");
+						FILTRO_CATEGORIA_IGUAL_A, "Livros");*/
+
+		gdr = new GeradorDeRelatorios(produtos, new InserctionSort(), new Preco(), 1, new FiltrarTodos());
 		
 		try{
 			gdr.geraRelatorio("saida.html");
