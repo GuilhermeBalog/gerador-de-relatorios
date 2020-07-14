@@ -1,6 +1,11 @@
 public class QuickSort implements Ordenacao {
     private Produto[] produtos;
     private Comparador<Produto> comparador;
+    private int ordem;
+
+    public QuickSort(int ordem){
+        this.ordem = ordem;
+    }
 
     public void ordenar(Produto[] produtos, Comparador<Produto> comparador){
         this.produtos = produtos;
@@ -27,15 +32,23 @@ public class QuickSort implements Ordenacao {
 
 		while(true){
 
-            do{ 
-                j--;
-
-            } while(! comparador.crescente(produtos[j], x));
-        
-            do{
-                i++;
-
-            } while(comparador.crescente(produtos[i], x));
+            if(ordem >= 0){
+                do{ 
+                    j--;
+                } while(comparador.crescente(x, produtos[j]));
+            
+                do{
+                    i++;
+                } while(comparador.crescente(produtos[i], x));
+            }else{
+                do{ 
+                    j--;
+                } while(comparador.crescente(produtos[j], x));
+            
+                do{
+                    i++;
+                } while(comparador.crescente(x, produtos[i]));
+            }
 
 			if(i < j){
 				Produto temp = produtos[i];
