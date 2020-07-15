@@ -29,7 +29,12 @@ public class GeradorDeRelatorios {
 		PrintWriter out = new PrintWriter(arquivoSaida);
 
 		out.println("<!DOCTYPE html><html>");
-		out.println("<head><title>Relatorio de produtos</title></head>");
+		out.println("<head>");
+		out.println("<title>Relatorio de produtos</title>");
+		out.println("<style>body{font-family: sans-serif;background-color: #eee;}h1{text-align: center;}ul{list-style-type: none;padding: 0;margin: 0 auto;max-width: 800px;}li{padding: 10px;background-color: #fff;box-shadow: 1px 1px 4px rgba(0,0,0,0.2);margin-bottom: 5px;}p{text-align: center;}</style>");
+		out.println("<meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>");
+		out.println("</head>");
+
 		out.println("<body>");
 		out.println("<h1>Relatorio de Produtos:</h1>");
 		out.println("<ul>");
@@ -105,7 +110,7 @@ public class GeradorDeRelatorios {
 
 		GeradorDeRelatorios gdr;
 
-		gdr = new GeradorDeRelatorios(produtos, new QuickSort(1), new CriterioPreco(), new FiltrarDescricao("nOKiA"));
+		gdr = new GeradorDeRelatorios(produtos, new QuickSort(1), new CriterioPreco(), new FiltrarCategoria("Livros"));
 		
 		try{
 			gdr.geraRelatorio("saida.html");
